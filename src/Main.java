@@ -22,7 +22,6 @@ class InvalidAccountOperationException extends Exception {
         super(message);
     }
 }
-
 // ============================
 // Observer Pattern - Define Observer Interface
 // ============================
@@ -35,7 +34,6 @@ class TransactionLogger implements Observer {
         System.out.println(message);
     }
 }
-
 // ============================
 // BankAccount (Subject in Observer Pattern)
 // ============================
@@ -99,7 +97,7 @@ class BankAccount {
             throw new InvalidAccountOperationException("Account is already closed");
         }
         this.isActive = false;
-        notifyObservers("Account closed");
+        notifyObservers("Account Closed");
     }
 }
 
@@ -147,6 +145,9 @@ class SecureBankAccount extends BankAccountDecorator {
         if (amount > 500) {
             throw new OverdrawException("Exceeded the limit");
         }
+        if (amount < 0) {
+            throw new OverdrawException("Negative withdrawal amount");
+        }
         decoratedAccount.withdraw(amount);
     }
 }
@@ -191,8 +192,8 @@ class BankAccountTest {
             // Close account
             secureBankAccount.closeAccount();
 
-            // Try depositing to closed account to demonstrate the exception
-            System.out.println("Depositing $500");
+            // Try depositing to closed account to show InvalidAccountOperation exception works
+            System.out.println("Lets try depositing $500");
             secureBankAccount.deposit(500);
 
             // Exception handling for the different possible cases
