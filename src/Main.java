@@ -44,6 +44,9 @@ class BankAccount {
     private List<Observer> observers = new ArrayList<>();
 
     public BankAccount(String accNum, double initialBalance) {
+        if (initialBalance < 0) {
+            throw new IllegalArgumentException("Initial balance can't be negative");
+        }
         this.accountNumber = accNum;
         this.balance = initialBalance;
         this.isActive = true;
@@ -175,27 +178,52 @@ class BankAccountTest {
 
             // Wrap account with withdraw security feature
             SecureBankAccount secureBankAccount = new SecureBankAccount(account);
+            boolean running = true;
 
-            // Deposit to secured account
-            System.out.print("Enter an amount to deposit: ");
-            double deposit = scanner.nextDouble();
-            secureBankAccount.deposit(deposit);
+            while (running) {
+                System.out.println("1. Deposit");
+                System.out.println("2. Withdraw");
+                System.out.println("3. View balance");
+                System.out.println("4. Close account");
+                System.out.println("5. Exit");
+                int choice = scanner.nextInt();
 
-            // Withdraw from secured account
-            System.out.print("Enter an amount to withdraw: ");
-            double withdraw = scanner.nextDouble();
-            secureBankAccount.withdraw(withdraw);
-
-            // Output the balance
-            System.out.println("Account Balance: " + account.getBalance());
-
-            // Close account
-            secureBankAccount.closeAccount();
-
-            // Try depositing to closed account to show InvalidAccountOperation exception works
-            System.out.println("Lets try depositing $500");
-            secureBankAccount.deposit(500);
-
+                switch (choice) {
+                    case 1: {
+                        // Deposit to secured account
+                        System.out.print("Enter an amount to deposit: ");
+                        double deposit = scanner.nextDouble();
+                        secureBankAccount.deposit(deposit);
+                        break;
+                    }
+                    case 2: {
+                        // Withdraw from secured account
+                        System.out.print("Enter an amount to withdraw: ");
+                        double withdraw = scanner.nextDouble();
+                        secureBankAccount.withdraw(withdraw);
+                        break;
+                    }
+                    case 3: {
+                        // Output the balance
+                        System.out.println("Account Balance: " + account.getBalance());
+                        break;
+                    }
+                    case 4: {
+                        // Close account
+                        secureBankAccount.closeAccount();
+                        running = false;
+                        break;
+                    }
+                    case 5: {
+                        System.out.println("Exiting");
+                        running = false;
+                        break;
+                    }
+                    default: {
+                        System.out.println("Invalid choice");
+                    }
+                }
+            }
             // Exception handling for the different possible cases
         } catch (InvalidAccountOperationException e) {
             System.out.println("Invalid operation: " + e.getMessage());
